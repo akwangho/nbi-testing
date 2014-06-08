@@ -3,7 +3,7 @@
  */
 
 angular.module("nbi")
-    .controller("queryCtrl", function($scope, $http) {
+    .controller("queryCtrl", function($scope, $http, $cookieStore) {
         $scope.response = undefined;
         $scope.isCollapsed = true;
 
@@ -39,10 +39,12 @@ angular.module("nbi")
         $scope.isEncUeIp = true;
         $scope.encryptedUeMac = undefined;
         $scope.needUsernamePassword = false;
-        $scope.ueUsername = "";
-        $scope.uePassword = "";
+        $scope.ueUsername = "abc";
+        $scope.uePassword = "aaaa";
 
         $scope.requestContent = "";
+
+        restoreFormDataFromCookie();
 
         function sendRequest(req, callback) {
             var reqTemplate = {
@@ -101,7 +103,26 @@ angular.module("nbi")
             sendRequest();
         }
 
+        function storeFormDataToCookie() {
+            $cookieStore.put('reqUrl', $scope.reqUrl);
+            $cookieStore.put('requestPassword', $scope.requestPassword);
+            $cookieStore.put('ueMac', $scope.ueMac);
+            $cookieStore.put('ueIp', $scope.ueIp);
+            $cookieStore.put('ueUsername', $scope.ueUsername);
+            $cookieStore.put('uePassword', $scope.uePassword);
+        }
+
+        function restoreFormDataFromCookie() {
+            $scope.reqUrl = $cookieStore.get('reqUrl')? $cookieStore.get('reqUrl'): $scope.reqUrl;
+            $scope.requestPassword = $cookieStore.get('requestPassword')? $cookieStore.get('requestPassword'): $scope.requestPassword;
+            $scope.ueMac = $cookieStore.get('ueMac')? $cookieStore.get('ueMac'): $scope.ueMac;
+            $scope.ueIp = $cookieStore.get('ueIp')? $cookieStore.get('ueIp'): $scope.ueIp;
+            $scope.ueUsername = $cookieStore.get('ueUsername')? $cookieStore.get('ueUsername'): $scope.ueUsername;
+            $scope.uePassword = $cookieStore.get('uePassword')? $cookieStore.get('uePassword'): $scope.uePassword;
+        }
+
         $scope.query = function () {
+            storeFormDataToCookie();
             function prepareRequestForEncryptIP(data) {
                 return {
                     "RequestCategory": GetConfig,

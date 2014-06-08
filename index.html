@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <title>Northbound Portal Interface Test</title>
     <script src="bower_components/angular/angular.js"></script>
+    <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="nbi.js"></script>
     <script src="controllers/queryController.js"></script>
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
@@ -15,7 +16,7 @@
 
 </div>
 
-<div class="alert alert-success" ng-show="response && !requestContent">
+<div class="alert alert-success" ng-show="response && !requestContent && !error">
     <strong>{{response.ResponseCode}} {{response.ReplyMessage}}</strong>
     &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="alert-link" ng-click="showResponseDetail=!(showResponseDetail)">
     Click to {{showResponseDetail? "hide": "show"}} detail</a>
@@ -38,7 +39,7 @@
     Error (Code: {{error.code}}). The request was not succeeded.
 </div>
 
-<div class="alert alert-info" ng-show="requestContent">
+<div class="alert alert-info" ng-show="requestContent && !error">
     <img src="images/icon_processing.gif" />
     Sending {{requestContent.RequestCategory}} request to {{reqUrl}}
     &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="alert-link" ng-click="showRequestDetail=!(showRequestDetail)">
@@ -94,7 +95,7 @@
     <tr>
         <td>UE-MAC</td>
         <td><input ng-model="ueMac" ng-change="encryptedUeMac=''">
-             Auto Encrypt
+            Auto Encrypt
             <input type="checkbox" ng-model="isEncUeMac" ng-change="encryptedUeMac=''">{{encryptedUeMac}}
         </td>
     </tr>
