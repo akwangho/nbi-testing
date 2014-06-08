@@ -16,10 +16,31 @@
 
 </div>
 
+<div class="alert alert-info" ng-show="(response || requestContent) && !error">
+    <span ng-show="requestContent"><img src="images/icon_processing.gif" />
+        Sending {{requestContent.RequestCategory}} request to {{reqUrl}}&nbsp;&nbsp;&nbsp;&nbsp;
+    </span>
+    <a href="#" class="alert-link" ng-click="showRequestDetail=!(showRequestDetail)">
+    Click to {{showRequestDetail? "hide": "show"}} request detail</a>
+    <table class="table table-striped table-bordered table-condensed"
+           style="color: #080808; background-color: #eee" ng-show="showRequestDetail && lastRequestContent">
+        <thead>
+        <th>Key</th>
+        <th>Value</th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="(key,value) in lastRequestContent">
+            <td>{{key}}</td>
+            <td>{{value}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
 <div class="alert alert-success" ng-show="response && !requestContent && !error">
-    <strong>{{response.ResponseCode}} {{response.ReplyMessage}}</strong>
-    &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="alert-link" ng-click="showResponseDetail=!(showResponseDetail)">
-    Click to {{showResponseDetail? "hide": "show"}} detail</a>
+    <strong>{{response.ResponseCode}} {{response.ReplyMessage}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;
+    <a href="#" class="alert-link" ng-click="showResponseDetail=!(showResponseDetail)">
+    Click to {{showResponseDetail? "hide": "show"}} response detail</a>
     <table class="table table-striped table-bordered table-condensed"
            style="color: #080808; background-color: #eee" ng-show="showResponseDetail && response">
         <thead>
@@ -37,26 +58,6 @@
 
 <div class="alert alert-danger" ng-show="error && !requestContent">
     Error (Code: {{error.code}}). The request was not succeeded.
-</div>
-
-<div class="alert alert-info" ng-show="requestContent && !error">
-    <img src="images/icon_processing.gif" />
-    Sending {{requestContent.RequestCategory}} request to {{reqUrl}}
-    &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="alert-link" ng-click="showRequestDetail=!(showRequestDetail)">
-    Click to {{showRequestDetail? "hide": "show"}} detail</a>
-    <table class="table table-striped table-bordered table-condensed"
-           style="color: #080808; background-color: #eee" ng-show="showRequestDetail && requestContent">
-        <thead>
-        <th>Key</th>
-        <th>Value</th>
-        </thead>
-        <tbody>
-        <tr ng-repeat="(key,value) in requestContent">
-            <td>{{key}}</td>
-            <td>{{value}}</td>
-        </tr>
-        </tbody>
-    </table>
 </div>
 
 <button ng-click="error=false; showResponseDetail=false; showRequestDetail=false; query()"

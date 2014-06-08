@@ -71,6 +71,7 @@ angular.module("nbi")
             if (req) {
                 for (var key1 in req) $scope.requestContent[key1] = req[key1];
             }
+            $scope.lastRequestContent = angular.copy($scope.requestContent);
 
             $http({
                 url: '/nbi',
