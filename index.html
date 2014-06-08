@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html ng-app="nbi">
+<head lang="en">
+    <meta charset="UTF-8">
+    <title>Northbound Portal Interface Test</title>
+    <script src="bower_components/angular/angular.js"></script>
+    <script src="nbi.js"></script>
+    <script src="controllers/queryController.js"></script>
+    <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
+    <link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
+</head>
+<body ng-controller="queryCtrl">
+<div class="navbar navbar-inverse">
+    <a class="navbar-brand">Northbound Portal Interface Test</a>
+
+</div>
+
+<div class="alert alert-success" ng-show="response && !requestContent">
+    <strong>{{response.ResponseCode}} {{response.ReplyMessage}}</strong>
+    &nbsp;&nbsp;&nbsp;&nbsp;<a href="#" class="alert-link" ng-click="showDetail=!(showDetail)">Click to {{showDetail? "hide": "show"}} detail</a>
+    <table class="table table-striped table-bordered table-condensed"
+           style="color: #080808; background-color: #eee" ng-show="showDetail && response">
+        <thead>
+        <th>Key</th>
+        <th>Value</th>
+        </thead>
+        <tbody>
+        <tr ng-repeat="(key,value) in response">
+            <td>{{key}}</td>
+            <td>{{value}}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<div class="alert alert-danger" ng-show="error && !requestContent">
+    Error (Code: {{error.code}}). The request was not succeeded.
+</div>
+
+<div class="alert alert-info" ng-show="requestContent">
+    <img src="images/icon_processing.gif" />
+    Sending {{requestContent.RequestCategory}} request to {{reqUrl}}
+</div>
+
+<button ng-click="showDetail=false; query()"
+        class="btn btn-success pull-left">
+    Send Query
+</button>
+
+<table class="table table-striped table-bordered table-condensed">
+    <thead>
+    <th>Key</th>
+    <th>Value</th>
+    </thead>
+    <tbody>
+    <tr>
+        <td>URL</td>
+        <td><input ng-model="reqUrl" size="70"></td>
+    </tr>
+    <tr>
+        <td>Category</td>
+        <td>
+            <select ng-model="category" ng-options="cat for cat in datastore.category"></select>
+        </td>
+    </tr>
+    <tr>
+        <td>Request Type</td>
+        <td>
+            <select ng-model="requestType" ng-change="onRequestTypeChange()"
+                    ng-options="req.name for req in datastore.requestType
+            | filter:{category:category}"></select>
+        </td>
+    </tr>
+    <tr>
+        <td>Request Password</td>
+        <td><input ng-model="requestPassword"></td>
+    </tr>
+    <tr>
+        <td>UE-MAC</td>
+        <td><input ng-model="ueMac" ng-change="encryptedUeMac=''">
+             Auto Encrypt
+            <input type="checkbox" ng-model="isEncUeMac" ng-change="encryptedUeMac=''">{{encryptedUeMac}}
+        </td>
+    </tr>
+    <tr>
+        <td>UE-IP</td>
+        <td><input ng-model="ueIp" ng-change="encryptedUeIp=''">
+            Auto Encrypt
+            <input type="checkbox" ng-model="isEncUeIp" ng-change="encryptedUeIp=''">{{encryptedUeIp}}
+        </td>
+    </tr>
+    <tr ng-show="needUsernamePassword">
+        <td>UE Username</td>
+        <td><input ng-model="ueUsername">
+        </td>
+    </tr>
+    <tr ng-show="needUsernamePassword">
+        <td>UE Password</td>
+        <td><input ng-model="uePassword">
+        </td>
+    </tr>
+    </tbody>
+</table>
+
+</body>
+</html>
