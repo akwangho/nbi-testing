@@ -31,7 +31,6 @@ var doPost = function(url, content, callback) {
 
     request(options, function (error, response, body) {
         var res = error? JSON.stringify(error): body;
-        console.log(res);
         callback(res);
     });
 };
