@@ -111,15 +111,19 @@ angular.module("nbi")
             $cookieStore.put('ueIp', $scope.ueIp);
             $cookieStore.put('ueUsername', $scope.ueUsername);
             $cookieStore.put('uePassword', $scope.uePassword);
+            $cookieStore.put('isEncUeMac', $scope.isEncUeMac);
+            $cookieStore.put('isEncUeIp', $scope.isEncUeIp);
         }
 
         function restoreFormDataFromCookie() {
-            $scope.reqUrl = $cookieStore.get('reqUrl')? $cookieStore.get('reqUrl'): $scope.reqUrl;
-            $scope.requestPassword = $cookieStore.get('requestPassword')? $cookieStore.get('requestPassword'): $scope.requestPassword;
-            $scope.ueMac = $cookieStore.get('ueMac')? $cookieStore.get('ueMac'): $scope.ueMac;
-            $scope.ueIp = $cookieStore.get('ueIp')? $cookieStore.get('ueIp'): $scope.ueIp;
-            $scope.ueUsername = $cookieStore.get('ueUsername')? $cookieStore.get('ueUsername'): $scope.ueUsername;
-            $scope.uePassword = $cookieStore.get('uePassword')? $cookieStore.get('uePassword'): $scope.uePassword;
+            $scope.reqUrl = $cookieStore.get('reqUrl') !== undefined ? $cookieStore.get('reqUrl'): $scope.reqUrl;
+            $scope.requestPassword = $cookieStore.get('requestPassword') !== undefined ? $cookieStore.get('requestPassword'): $scope.requestPassword;
+            $scope.ueMac = $cookieStore.get('ueMac') !== undefined ? $cookieStore.get('ueMac'): $scope.ueMac;
+            $scope.ueIp = $cookieStore.get('ueIp') !== undefined ? $cookieStore.get('ueIp'): $scope.ueIp;
+            $scope.ueUsername = $cookieStore.get('ueUsername') !== undefined ? $cookieStore.get('ueUsername'): $scope.ueUsername;
+            $scope.uePassword = $cookieStore.get('uePassword') !== undefined ? $cookieStore.get('uePassword'): $scope.uePassword;
+            $scope.isEncUeMac = $cookieStore.get('isEncUeMac') !== undefined ? $cookieStore.get('isEncUeMac'): $scope.isEncUeMac;
+            $scope.isEncUeIp = $cookieStore.get('isEncUeIp') !== undefined ? $cookieStore.get('isEncUeIp'): $scope.isEncUeIp;
         }
 
         $scope.query = function () {

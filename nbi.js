@@ -1,1 +1,1 @@
-angular.module("nbi", ['ngCookies']);
+angular.module("nbi", ['ngCookies']); // angular-cookies
