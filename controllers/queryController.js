@@ -10,6 +10,22 @@ angular.module("nbi")
         var UserOnlineControl = "UserOnlineControl";
         var GetConfig = "GetConfig";
 
+        var DataToBeStoredInCookie = [
+            "reqUrl",
+            "requestPassword",
+            "ueMac",
+            "ueIp",
+            "ueUsername",
+            "uePassword",
+            "isEncUeMac"
+        ];
+
+        // Prevent user to change the enum
+        var CookieStoreEnum = Object.freeze({
+            "STORE": "STORE FORM DATA TO COOKIE",
+            "RESTORE": "RESTORE FORM DATA FROM COOKIE"
+        });
+
         $scope.datastore = [];
         $scope.datastore.category = [UserOnlineControl, GetConfig];
         $scope.category = $scope.datastore.category[0];
@@ -44,8 +60,7 @@ angular.module("nbi")
 
         $scope.requestContent = "";
 
-        restoreFormDataFromCookie();
-
+        handleFormDataWithCookie(CookieStoreEnum.RESTORE);
         function sendRequest(req, callback) {
             var reqTemplate = {
                 "Vendor": "Ruckus",
@@ -74,7 +89,7 @@ angular.module("nbi")
             $scope.lastRequestContent = angular.copy($scope.requestContent);
 
             $http({
-                url: '/nbi',
+                url: '/proxy',
                 method: "POST",
                 data: {
                     requestUrl: $scope.reqUrl,
@@ -104,30 +119,19 @@ angular.module("nbi")
             sendRequest();
         }
 
-        function storeFormDataToCookie() {
-            $cookieStore.put('reqUrl', $scope.reqUrl);
-            $cookieStore.put('requestPassword', $scope.requestPassword);
-            $cookieStore.put('ueMac', $scope.ueMac);
-            $cookieStore.put('ueIp', $scope.ueIp);
-            $cookieStore.put('ueUsername', $scope.ueUsername);
-            $cookieStore.put('uePassword', $scope.uePassword);
-            $cookieStore.put('isEncUeMac', $scope.isEncUeMac);
-            $cookieStore.put('isEncUeIp', $scope.isEncUeIp);
-        }
-
-        function restoreFormDataFromCookie() {
-            $scope.reqUrl = $cookieStore.get('reqUrl') !== undefined ? $cookieStore.get('reqUrl'): $scope.reqUrl;
-            $scope.requestPassword = $cookieStore.get('requestPassword') !== undefined ? $cookieStore.get('requestPassword'): $scope.requestPassword;
-            $scope.ueMac = $cookieStore.get('ueMac') !== undefined ? $cookieStore.get('ueMac'): $scope.ueMac;
-            $scope.ueIp = $cookieStore.get('ueIp') !== undefined ? $cookieStore.get('ueIp'): $scope.ueIp;
-            $scope.ueUsername = $cookieStore.get('ueUsername') !== undefined ? $cookieStore.get('ueUsername'): $scope.ueUsername;
-            $scope.uePassword = $cookieStore.get('uePassword') !== undefined ? $cookieStore.get('uePassword'): $scope.uePassword;
-            $scope.isEncUeMac = $cookieStore.get('isEncUeMac') !== undefined ? $cookieStore.get('isEncUeMac'): $scope.isEncUeMac;
-            $scope.isEncUeIp = $cookieStore.get('isEncUeIp') !== undefined ? $cookieStore.get('isEncUeIp'): $scope.isEncUeIp;
+        function handleFormDataWithCookie(cookieStoreEnum) {
+            angular.forEach(DataToBeStoredInCookie, function(value) {
+                if (cookieStoreEnum == CookieStoreEnum.STORE) {
+                    $cookieStore.put(value, $scope[value]);
+                }
+                else { // restore
+                    $scope[value] = $cookieStore.get(value) !== undefined? $cookieStore.get(value): $scope[value];
+                }
+            })
         }
 
         $scope.query = function () {
-            storeFormDataToCookie();
+            handleFormDataWithCookie(CookieStoreEnum.STORE);
             function prepareRequestForEncryptIP(data) {
                 return {
                     "RequestCategory": GetConfig,
