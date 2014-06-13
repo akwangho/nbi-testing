@@ -44,7 +44,7 @@ angular.module("wizard").controller("wizardCtrl",
         $scope.adminPass1 = 'admin!234';
 
         $scope.toolTipSzIP = "I can reach corporate network (172.17.x.x) and embedded team server room network (192.168.x.x).";
-        $scope.toolTipClusterName = "Cluster/Controller name allows only number, alphabetic. _ (underscore) and - (dash).";
+        $scope.toolTipClusterName = "Cluster/Controller name allows only (0-9), (a-Z), _ (underscore) and - (dash).";
 
         handleFormDataWithCookie(DataToBeStoredInCookie, CookieStoreEnum.RESTORE, $scope, $cookieStore);
 
