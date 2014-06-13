@@ -98,21 +98,21 @@ angular.module("wizard").controller("wizardCtrl",
                 }
 
                 var setTimerToCheckUrl = function () {
-                    var maxRetry = 100;
-                    var retryCount = 0;
+                    var maxRetry = 60; // times
                     var retryInterval = 5000; // milliseconds
+                    var _retryCount = 0;
                     $scope.urlCheckTimer = $interval(function() {
                         sendRequest(genBaseUrl($scope.newIP), $scope.WIZARD_URL + "?action=isSetupRunning&t=" + new Date().getTime(), function () {
                             $window.location.href = genBaseUrl($scope.newIP);
                         }, "IGNORE_ERROR");
-                        retryCount++;
-                        if (retryCount >= maxRetry) {
+                        _retryCount++;
+                        if (_retryCount >= maxRetry) {
                             $scope.error = "Can't get response within " + maxRetry * retryInterval/1000 + " seconds."
                         }
-                        console.log("(" + retryCount + "/" + maxRetry + ")Checking new URL... " + $scope.newIP);
+                        console.log("(" + _retryCount + "/" + maxRetry + ")Checking new URL... " + $scope.newIP);
                     }, retryInterval, maxRetry);
                 };
-                $timeout(setTimerToCheckUrl, 30*1000);
+                $timeout(setTimerToCheckUrl, 30 * 1000); // delay 30 s then start query
             };
 
             $scope.lastRequestContent = angular.copy($scope.requestContent);
