@@ -70,9 +70,10 @@
 </div>
 
 <button class="btn btn-primary" ng-click="resetStatus(); doSetup()">Do Setup</button>&nbsp;&nbsp;
-SZ IP: <input ng-model="szIp" ng-enter="resetStatus(); doSetup()" tooltip-placement="bottom" tooltip="{{toolTipSzIP}}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterControllerNameChange()" ng-enter="resetStatus(); doSetup()"
-                                tooltip-placement="right" tooltip="{{toolTipClusterName}}"><br/><br/>
+<span tooltip-placement="bottom" tooltip="{{toolTipSzIP}}">SZ IP: </span>
+<input ng-model="szIp" ng-enter="resetStatus(); doSetup()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+<span tooltip-placement="bottom" tooltip="{{toolTipClusterName}}">Cluster/Controller Name: </span>
+<input ng-model="clusterName" ng-change="onClusterControllerNameChange()" ng-enter="resetStatus(); doSetup()"><br/><br/>
 <button type="button" class="btn btn-default btn-sm" ng-model="advance" btn-checkbox>Advance Setting</button>
 <table class="table table-striped table-bordered table-condensed"
        style="color: #080808; background-color: #eee" ng-show="advance">
@@ -171,7 +172,7 @@ Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterContr
                     <td>Cluster Name: </td>
                     <td>
                         <input ng-model="clusterName" size="40">
-                        <input type="checkbox" ng-model="appendIpToClusterName"> Append IP to cluster name to avoid collision
+                        <input type="checkbox" ng-model="appendIpToClusterName"> Append IP to cluster name to avoid conflict
                     </td>
                 </tr>
                 <tr>
