@@ -6,6 +6,7 @@
     <script src="bower_components/angular/angular.js"></script>
     <script src="bower_components/angular-cookies/angular-cookies.js"></script>
     <script src="nbi.js"></script>
+    <script src="controllers/shared.js"></script>
     <script src="controllers/queryController.js"></script>
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
@@ -13,7 +14,6 @@
 <body ng-controller="queryCtrl">
 <div class="navbar navbar-inverse">
     <a class="navbar-brand">Northbound Portal Interface Test</a>
-
 </div>
 
 <div class="alert alert-info" ng-show="(response || requestContent) && !error">

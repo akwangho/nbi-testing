@@ -1,0 +1,1 @@
+angular.module("wizard", ['ngCookies', 'ui.bootstrap']); // angular-cookies, angular-ui-bootstrap

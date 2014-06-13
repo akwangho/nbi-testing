@@ -20,12 +20,6 @@ angular.module("nbi")
             "isEncUeMac"
         ];
 
-        // Prevent user to change the enum
-        var CookieStoreEnum = Object.freeze({
-            "STORE": "STORE FORM DATA TO COOKIE",
-            "RESTORE": "RESTORE FORM DATA FROM COOKIE"
-        });
-
         $scope.datastore = [];
         $scope.datastore.category = [UserOnlineControl, GetConfig];
         $scope.category = $scope.datastore.category[0];
@@ -60,7 +54,7 @@ angular.module("nbi")
 
         $scope.requestContent = "";
 
-        handleFormDataWithCookie(CookieStoreEnum.RESTORE);
+        handleFormDataWithCookie(DataToBeStoredInCookie, CookieStoreEnum.RESTORE, $scope, $cookieStore);
         function sendRequest(req, callback) {
             var reqTemplate = {
                 "Vendor": "Ruckus",
@@ -119,19 +113,8 @@ angular.module("nbi")
             sendRequest();
         }
 
-        function handleFormDataWithCookie(cookieStoreEnum) {
-            angular.forEach(DataToBeStoredInCookie, function(value) {
-                if (cookieStoreEnum == CookieStoreEnum.STORE) {
-                    $cookieStore.put(value, $scope[value]);
-                }
-                else { // restore
-                    $scope[value] = $cookieStore.get(value) !== undefined? $cookieStore.get(value): $scope[value];
-                }
-            })
-        }
-
         $scope.query = function () {
-            handleFormDataWithCookie(CookieStoreEnum.STORE);
+            handleFormDataWithCookie(DataToBeStoredInCookie, CookieStoreEnum.STORE, $scope, $cookieStore);
             function prepareRequestForEncryptIP(data) {
                 return {
                     "RequestCategory": GetConfig,
