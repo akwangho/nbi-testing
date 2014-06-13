@@ -33,4 +33,7 @@ var doPost = function(url, content, callback) {
     });
 };
 
+
+app.listen(process.env.PORT || 80); // need to run as root
 app.listen(process.env.PORT || 3000);
+console.log("Server running at port 3000 and 80");

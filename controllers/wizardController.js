@@ -1,5 +1,5 @@
 angular.module("wizard").controller("wizardCtrl",
-    function ($scope, $http, $cookieStore, $interval, $window) {
+    function ($scope, $http, $cookieStore, $interval, $window, $timeout) {
         $scope.ONE_PORT_GROUP = "One Port Group";
         $scope.TWO_PORT_GROUP = "Two Port Group";
         $scope.WIZARD_URL = 'adminweb/setupWizard';
@@ -43,7 +43,7 @@ angular.module("wizard").controller("wizardCtrl",
         $scope.clusterNodePassword = 'admin!234';
         $scope.adminPass1 = 'admin!234';
 
-        $scope.toolTipSzIP = "I can reach corporate network (172.17.x.x) and embedded team server room network (192.168.x.x).";
+        $scope.toolTipSzIP = "This can reach corporate network (172.17.x.x) and embedded team server room network (192.168.x.x).";
         $scope.toolTipClusterName = "Cluster/Controller name allows only (0-9), (a-Z), _ (underscore) and - (dash).";
 
         handleFormDataWithCookie(DataToBeStoredInCookie, CookieStoreEnum.RESTORE, $scope, $cookieStore);
@@ -96,19 +96,23 @@ angular.module("wizard").controller("wizardCtrl",
                 else {
                     $scope.newIP = $scope.br0Ip;
                 }
-                var maxRetry = 100;
-                var retryCount = 0;
-                var retryInterval = 3000; // milliseconds
-                $scope.urlCheckTimer = $interval(function() {
-                    sendRequest(genBaseUrl($scope.newIP), $scope.WIZARD_URL + "?action=isSetupRunning&t=" + new Date().getTime(), function () {
-                        $window.location.href = genBaseUrl($scope.newIP);
-                    }, "IGNORE_ERROR");
-                    retryCount++;
-                    if (retryCount >= maxRetry) {
-                        $scope.error = "Can't get response within " + maxRetry * retryInterval/1000 + " seconds."
-                    }
-                    console.log("(" + retryCount + "/" + maxRetry + ")Checking new URL... " + $scope.newIP);
-                }, retryInterval, maxRetry);
+
+                var setTimerToCheckUrl = function () {
+                    var maxRetry = 100;
+                    var retryCount = 0;
+                    var retryInterval = 5000; // milliseconds
+                    $scope.urlCheckTimer = $interval(function() {
+                        sendRequest(genBaseUrl($scope.newIP), $scope.WIZARD_URL + "?action=isSetupRunning&t=" + new Date().getTime(), function () {
+                            $window.location.href = genBaseUrl($scope.newIP);
+                        }, "IGNORE_ERROR");
+                        retryCount++;
+                        if (retryCount >= maxRetry) {
+                            $scope.error = "Can't get response within " + maxRetry * retryInterval/1000 + " seconds."
+                        }
+                        console.log("(" + retryCount + "/" + maxRetry + ")Checking new URL... " + $scope.newIP);
+                    }, retryInterval, maxRetry);
+                };
+                $timeout(setTimerToCheckUrl, 30*1000);
             };
 
             $scope.lastRequestContent = angular.copy($scope.requestContent);
