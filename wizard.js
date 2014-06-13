@@ -1,4 +1,4 @@
-var app = angular.module("wizard", ['ngCookies', 'ui.bootstrap']); // angular-cookies, angular-ui-bootstrap
+var app = angular.module("wizard", ['ngCookies', 'ui.bootstrap']); // angular-cookies, angular-bootstrap
 
 app.directive('ngEnter', function () {
     return function (scope, element, attrs) {
