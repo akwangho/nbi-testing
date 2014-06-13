@@ -14,7 +14,7 @@
 </head>
 <body ng-controller="wizardCtrl">
 <div class="navbar navbar-inverse">
-    <a class="navbar-brand" href="#">One Button Setup - SmartZone 100
+    <a class="navbar-brand" href="wizard.html">One Button Setup - SmartZone 100
         <span class="label label-default" style="font-size: 12px">Beta</span>
     </a>
     <a class="navbar-brand navbar-right" href="index.html">Northbound Portal Interface Test</a>
@@ -169,7 +169,10 @@ Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterContr
             <table>
                 <tr>
                     <td>Cluster Name: </td>
-                    <td><input ng-model="clusterName" size="40"></td>
+                    <td>
+                        <input ng-model="clusterName" size="40">
+                        <input type="checkbox" ng-model="appendIpToClusterName"> Append IP to cluster name to avoid collision
+                    </td>
                 </tr>
                 <tr>
                     <td>Controller Name: </td>

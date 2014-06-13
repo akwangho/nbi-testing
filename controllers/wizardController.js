@@ -23,7 +23,8 @@ angular.module("wizard").controller("wizardCtrl",
             "isPG2Dhcp",
             "dpIp",
             "dpNetmask",
-            "dpGateway"
+            "dpGateway",
+            "appendIpToClusterName"
         ];
 
         // Init all data that will be stored in cookie
@@ -42,6 +43,7 @@ angular.module("wizard").controller("wizardCtrl",
         $scope.ntpServer = 'pool.ntp.org';
         $scope.clusterNodePassword = 'admin!234';
         $scope.adminPass1 = 'admin!234';
+        $scope.appendIpToClusterName = true;
 
         $scope.toolTipSzIP = "This can reach corporate network (172.17.x.x) and embedded team server room network (192.168.x.x).";
         $scope.toolTipClusterName = "Cluster/Controller name allows only (0-9), (a-Z), _ (underscore) and - (dash).";
@@ -58,7 +60,8 @@ angular.module("wizard").controller("wizardCtrl",
             $scope.requestContent = {
                 "portConfig": $scope.portGroup == $scope.ONE_PORT_GROUP? 1: 2,
                 "createClusterType": $scope.clusterType,
-                "clusterName": $scope.clusterName,
+                "clusterName": $scope.appendIpToClusterName? $scope.clusterName + "_" +
+                    ($scope.isPG1Dhcp? $scope.szIp: $scope.br0Ip).replace(".", "_"): $scope.clusterName,
                 "bladeName": $scope.bladeName,
                 "bladeDesc": getReadableTime() + ' Setup by One Button Setup',
                 "DiscoveryProtocolType": 'Tcp',
@@ -89,13 +92,7 @@ angular.module("wizard").controller("wizardCtrl",
             };
 
             var checkNewUrl = function () {
-                $scope.newIP = '';
-                if ($scope.isPG1Dhcp) {
-                    $scope.newIP = $scope.szIp;
-                }
-                else {
-                    $scope.newIP = $scope.br0Ip;
-                }
+                $scope.newIP = $scope.isPG1Dhcp? $scope.szIp: $scope.br0Ip ;
 
                 var setTimerToCheckUrl = function () {
                     var maxRetry = 60; // times
