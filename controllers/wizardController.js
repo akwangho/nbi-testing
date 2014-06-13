@@ -6,7 +6,6 @@ angular.module("wizard").controller("wizardCtrl",
 
         var DataToBeStoredInCookie = [
             "szIp",
-            "advance",
             "portGroup",
             "isPG1Dhcp",
             "br0Ip",
@@ -20,7 +19,11 @@ angular.module("wizard").controller("wizardCtrl",
             "ntpServer",
             "clusterSeeds",
             "clusterNodePassword",
-            "adminPass1"
+            "adminPass1",
+            "isPG2Dhcp",
+            "dpIp",
+            "dpNetmask",
+            "dpGateway"
         ];
 
         // Init all data that will be stored in cookie
@@ -33,6 +36,7 @@ angular.module("wizard").controller("wizardCtrl",
         $scope.advance = false;
         $scope.portGroup = $scope.ONE_PORT_GROUP;
         $scope.isPG1Dhcp = true;
+        $scope.isPG2Dhcp = true;
         $scope.primaryDns = '172.17.17.16';
         $scope.clusterType = 'new';
         $scope.ntpServer = 'pool.ntp.org';
@@ -58,10 +62,17 @@ angular.module("wizard").controller("wizardCtrl",
                 "ntpServer": $scope.ntpServer,
                 "clusterSeeds": $scope.clusterSeeds,
                 "clusterNodePassword": $scope.clusterNodePassword,
+
                 "by-dhcp-br0": $scope.isPG1Dhcp,
                 "ip-br0": $scope.br0Ip,
                 "netmask-br0": $scope.br0Netmask,
                 "gateway-br0": $scope.br0Gateway,
+
+                "by-dhcp-slot-DataPlane0": $scope.isPG2Dhcp,
+                "ip-slot-DataPlane0": $scope.dpIp,
+                "netmask-slot-DataPlane0": $scope.dpNetmask,
+                "gateway-slot-DataPlane0": $scope.dpGateway,
+
                 "defaultGateway": 'br0',
                 "primaryDns": $scope.primaryDns,
                 "secondaryDns": $scope.secondaryDns,
@@ -70,7 +81,7 @@ angular.module("wizard").controller("wizardCtrl",
                 "enable-pass1": $scope.adminPass1,
                 "enable-pass2": $scope.adminPass1,
                 "ethers": 'br0',
-                "slots": '',
+                "slots": $scope.portGroup == $scope.ONE_PORT_GROUP? '': 'DataPlane0',
                 "mgmtIp": $scope.mgmtIp
             };
 
@@ -88,7 +99,7 @@ angular.module("wizard").controller("wizardCtrl",
                 $scope.urlCheckTimer = $interval(function() {
                     sendRequest(genBaseUrl($scope.newIP), $scope.WIZARD_URL + "?action=isSetupRunning&t=" + new Date().getTime(), function () {
                         $window.location.href = genBaseUrl($scope.newIP);
-                    });
+                    }, "IGNORE_ERROR");
                     retryCount++;
                     if (retryCount >= maxRetry) {
                         $scope.error = "Can't get response within " + maxRetry * retryInterval/1000 + " seconds."
@@ -105,7 +116,7 @@ angular.module("wizard").controller("wizardCtrl",
             return 'http://' + ip + ':8080/'
         }
 
-        function sendRequest(requestUrl, postfix, callback, req) {
+        function sendRequest(requestUrl, postfix, callback, req, ignoreError) {
             $http({
                 url: '/proxy',
                 method: "POST",
@@ -114,7 +125,7 @@ angular.module("wizard").controller("wizardCtrl",
                 }
             }).success(function (data) {
                 $scope.requestContent = undefined;
-                if (data.errno) {
+                if (data.errno && !ignoreError) {
                     $scope.error = data;
                     return;
                 }
@@ -123,7 +134,9 @@ angular.module("wizard").controller("wizardCtrl",
                     callback();
                 }
             }).error(function (error) {
-                $scope.error = error;
+                if (!ignoreError) {
+                    $scope.error = error;
+                }
             }).then(function () {
                 $scope.requestContent = undefined;
             })

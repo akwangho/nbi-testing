@@ -129,6 +129,33 @@ Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterContr
             </table>
         </td>
     </tr>
+    <tr ng-show="portGroup==TWO_PORT_GROUP">
+        <td width="20%">
+            <strong>DP IP Setting</strong>
+        </td>
+        <td>
+            <label class="btn btn-warning" ng-model="isPG2Dhcp" btn-radio="true">DHCP</label>
+            <label class="btn btn-warning" ng-model="isPG2Dhcp" btn-radio="false">Static</label>
+            <div collapse="isPG2Dhcp">
+                <div class="btn-default well-sm">
+                    <table>
+                        <tr>
+                            <td>IP Address: </td>
+                            <td><input ng-model="dpIp"></td>
+                        </tr>
+                        <tr>
+                            <td>Netmask: </td>
+                            <td><input ng-model="dpNetmask"></td>
+                        </tr>
+                        <tr>
+                            <td>Gateway: </td>
+                            <td><input ng-model="dpGateway"></td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </td>
+    </tr>
     <tr>
         <td width="20%">
             <strong>Cluster Setting</strong>
@@ -136,7 +163,7 @@ Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterContr
         <td>
             <div class="btn-group">
                 <label class="btn btn-danger" ng-model="clusterType" btn-radio="'new'">Create</label>
-                <label class="btn btn-danger" ng-model="clusterType" btn-radio="'join'">Join</label>
+                <label class="btn btn-danger" ng-model="clusterType" btn-radio="'join'">Join (TODO)</label>
             </div>
             <table>
                 <tr>
