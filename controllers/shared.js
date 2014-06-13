@@ -25,3 +25,13 @@ var qs = function(obj, prefix){
     }
     return str.join("&");
 }
+
+var getReadableTime = function () {
+    var currentdate = new Date();
+    return currentdate.getDate() + "/" +
+        + (currentdate.getMonth() + 1) + "/"
+        + currentdate.getFullYear() + " @ "
+        + currentdate.getHours() + ":"
+        + currentdate.getMinutes() + ":"
+        + currentdate.getSeconds();
+};

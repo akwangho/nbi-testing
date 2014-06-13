@@ -17,9 +17,14 @@
     <div class="navbar-brand">One Button Setup - SmartZone 100</div>
 </div>
 
-<div class="alert alert-info" ng-show="(response || lastRequestContent) && !error">
-    <span ng-show="lastRequestContent"><img src="images/icon_processing.gif" />
-        Sending {{requestContent.RequestCategory}} request to {{reqUrl}}&nbsp;&nbsp;&nbsp;&nbsp;
+<div class="alert alert-info" ng-show="response && newIP && !error">
+    <img src="images/icon_processing.gif" />
+    <strong>Will redirect to http://{{newIP}}:8080 when it's available.</strong>
+</div>
+
+<div class="alert alert-info" ng-show="(response || requestContent) && !error">
+    <span ng-show="requestContent"><img src="images/icon_processing.gif" />
+        Sending request to {{szIp}}&nbsp;&nbsp;&nbsp;&nbsp;
     </span>
     <a href="#" class="alert-link" ng-click="showRequestDetail=!(showRequestDetail)">
         Click to {{showRequestDetail? "hide": "show"}} request detail</a>
@@ -38,7 +43,7 @@
     </table>
 </div>
 
-<div class="alert alert-success" ng-show="response && !requestContent && !error">
+<div class="alert alert-success" ng-show="!newIP && response && !requestContent && !error">
     <strong>{{response.ResponseCode}} {{response.ReplyMessage}}</strong>&nbsp;&nbsp;&nbsp;&nbsp;
     <a href="#" class="alert-link" ng-click="showResponseDetail=!(showResponseDetail)">
         Click to {{showResponseDetail? "hide": "show"}} response detail</a>
@@ -57,13 +62,13 @@
     </table>
 </div>
 
-<div class="alert alert-danger" ng-show="error && !lastRequestContent">
+<div class="alert alert-danger" ng-show="error && !requestContent">
     Error (Code: {{error.code}}). The request was not succeeded.
 </div>
 
-<button class="btn btn-success" ng-click="error=false; showResponseDetail=false; showRequestDetail=false; doSetup()">Do Setup</button>&nbsp;&nbsp;
-SZ IP: <input ng-model="szIp">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterControllerNameChange()"><br/><br/>
+<button class="btn btn-primary" ng-click="resetStatus(); doSetup()">Do Setup</button>&nbsp;&nbsp;
+SZ IP: <input ng-model="szIp" ng-enter="resetStatus(); doSetup()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterControllerNameChange()" ng-enter="resetStatus(); doSetup()"><br/><br/>
 <button type="button" class="btn btn-default btn-sm" ng-model="advance" btn-checkbox>Advance Setting</button>
 <table class="table table-striped table-bordered table-condensed"
        style="color: #080808; background-color: #eee" ng-show="advance">
@@ -78,8 +83,8 @@ Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterContr
         </td>
         <td>
             <div class="btn-group">
-                <label class="btn btn-primary" ng-model="portGroup" btn-radio="'{{ONE_PORT_GROUP}}'">{{ONE_PORT_GROUP}}</label>
-                <label class="btn btn-primary" ng-model="portGroup" btn-radio="'{{TWO_PORT_GROUP}}'">{{TWO_PORT_GROUP}}</label>
+                <label class="btn btn-success" ng-model="portGroup" btn-radio="'{{ONE_PORT_GROUP}}'">{{ONE_PORT_GROUP}}</label>
+                <label class="btn btn-success" ng-model="portGroup" btn-radio="'{{TWO_PORT_GROUP}}'">{{TWO_PORT_GROUP}}</label>
             </div>
         </td>
     </tr>
@@ -139,10 +144,6 @@ Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterContr
                     <td>Controller Name: </td>
                     <td><input ng-model="bladeName" size="40"></td>
                 </tr>
-                <tr>
-                    <td>Controller Description: </td>
-                    <td><input ng-model="bladeDesc" size="40"></td>
-                </tr>
                 <tr ng-show="clusterType=='new'">
                     <td>NTP Server: </td>
                     <td><input ng-model="ntpServer" size="40"></td>
@@ -181,6 +182,5 @@ Cluster/Controller Name: <input ng-model="clusterName" ng-change="onClusterContr
     </tr>
     </tbody>
 </table>
-
 </body>
 </html>

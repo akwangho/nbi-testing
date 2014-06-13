@@ -1,7 +1,8 @@
 angular.module("wizard").controller("wizardCtrl",
-    function ($scope, $http, $cookieStore) {
+    function ($scope, $http, $cookieStore, $interval, $window) {
         $scope.ONE_PORT_GROUP = "One Port Group";
         $scope.TWO_PORT_GROUP = "Two Port Group";
+        $scope.WIZARD_URL = 'adminweb/setupWizard';
 
         var DataToBeStoredInCookie = [
             "szIp",
@@ -16,7 +17,6 @@ angular.module("wizard").controller("wizardCtrl",
             "clusterType",
             "clusterName",
             "bladeName",
-            "bladeDesc",
             "ntpServer",
             "clusterSeeds",
             "clusterNodePassword",
@@ -30,12 +30,11 @@ angular.module("wizard").controller("wizardCtrl",
 
         // Initial values
         $scope.szIp = '172.17.';
-        $scope.advance = true;
+        $scope.advance = false;
         $scope.portGroup = $scope.ONE_PORT_GROUP;
         $scope.isPG1Dhcp = true;
         $scope.primaryDns = '172.17.17.16';
         $scope.clusterType = 'new';
-        $scope.bladeDesc = '-- Setup by One Button Setup --';
         $scope.ntpServer = 'pool.ntp.org';
         $scope.clusterNodePassword = 'admin!234';
         $scope.adminPass1 = 'admin!234';
@@ -49,12 +48,12 @@ angular.module("wizard").controller("wizardCtrl",
 
         $scope.doSetup = function () {
             handleFormDataWithCookie(DataToBeStoredInCookie, CookieStoreEnum.STORE, $scope, $cookieStore);
-            var req = {
+            $scope.requestContent = {
                 "portConfig": $scope.portGroup == $scope.ONE_PORT_GROUP? 1: 2,
                 "createClusterType": $scope.clusterType,
                 "clusterName": $scope.clusterName,
                 "bladeName": $scope.bladeName,
-                "bladeDesc": $scope.bladeDesc,
+                "bladeDesc": getReadableTime() + ' Setup by One Button Setup',
                 "DiscoveryProtocolType": 'Tcp',
                 "ntpServer": $scope.ntpServer,
                 "clusterSeeds": $scope.clusterSeeds,
@@ -74,34 +73,79 @@ angular.module("wizard").controller("wizardCtrl",
                 "slots": '',
                 "mgmtIp": $scope.mgmtIp
             };
-            sendRequest(req, null);
+
+            var checkNewUrl = function () {
+                $scope.newIP = '';
+                if ($scope.isPG1Dhcp) {
+                    $scope.newIP = $scope.szIp;
+                }
+                else {
+                    $scope.newIP = $scope.br0Ip;
+                }
+                var maxRetry = 100;
+                var retryCount = 0;
+                var retryInterval = 3000; // milliseconds
+                $scope.urlCheckTimer = $interval(function() {
+                    sendRequest(genBaseUrl($scope.newIP), $scope.WIZARD_URL + "?action=isSetupRunning&t=" + new Date().getTime(), function () {
+                        $window.location.href = genBaseUrl($scope.newIP);
+                    });
+                    retryCount++;
+                    if (retryCount >= maxRetry) {
+                        $scope.error = "Can't get response within " + maxRetry * retryInterval/1000 + " seconds."
+                    }
+                    console.log("(" + retryCount + "/" + maxRetry + ")Checking new URL... " + $scope.newIP);
+                }, retryInterval, maxRetry);
+            };
+
+            $scope.lastRequestContent = angular.copy($scope.requestContent);
+            sendRequest(genBaseUrl($scope.szIp), $scope.WIZARD_URL, checkNewUrl, $scope.requestContent);
         };
 
-        function sendRequest(req, callback) {
-            $scope.lastRequestContent = angular.copy(req);
+        function genBaseUrl(ip) {
+            return 'http://' + ip + ':8080/'
+        }
 
+        function sendRequest(requestUrl, postfix, callback, req) {
             $http({
                 url: '/proxy',
                 method: "POST",
                 data: {
-                    requestUrl: 'http://' + $scope.szIp + ':8080/adminweb/setupWizard?' +
-                        qs($scope.lastRequestContent)
+                    requestUrl: requestUrl + (postfix?postfix:'') + (req?"?"+qs(req):'')
                 }
             }).success(function (data) {
-                $scope.lastRequestContent = undefined;
+                $scope.requestContent = undefined;
                 if (data.errno) {
                     $scope.error = data;
                     return;
                 }
                 $scope.response = data;
-                if (callback) {
+                if (data['result'] == true && callback) {
                     callback();
                 }
             }).error(function (error) {
                 $scope.error = error;
             }).then(function () {
-                $scope.lastRequestContent = undefined;
+                $scope.requestContent = undefined;
             })
         }
+
+        $scope.stopCheckingUrl = function() {
+            if (angular.isDefined($scope.urlCheckTimer)) {
+                $interval.cancel($scope.urlCheckTimer);
+                $scope.urlCheckTimer = undefined;
+            }
+        };
+
+        $scope.resetStatus = function () {
+            $scope.newIP=null;
+            $scope.error=false;
+            $scope.showResponseDetail=false;
+            $scope.showRequestDetail=false;
+        };
+
+        $scope.$on('$destroy', function() {
+            // Make sure that the interval is destroyed too
+            $scope.stopCheckingUrl();
+        });
 });
 
