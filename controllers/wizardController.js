@@ -61,7 +61,7 @@ angular.module("wizard").controller("wizardCtrl",
                 "portConfig": $scope.portGroup == $scope.ONE_PORT_GROUP? 1: 2,
                 "createClusterType": $scope.clusterType,
                 "clusterName": $scope.appendIpToClusterName? $scope.clusterName + "_" +
-                    ($scope.isPG1Dhcp? $scope.szIp: $scope.br0Ip).replace(".", "_"): $scope.clusterName,
+                    ($scope.isPG1Dhcp? $scope.szIp: $scope.br0Ip).replace(/\./g,"_"): $scope.clusterName,
                 "bladeName": $scope.bladeName,
                 "bladeDesc": getReadableTime() + ' Setup by One Button Setup',
                 "DiscoveryProtocolType": 'Tcp',

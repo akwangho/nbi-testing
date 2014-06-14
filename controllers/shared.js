@@ -27,11 +27,11 @@ var qs = function(obj, prefix){
 }
 
 var getReadableTime = function () {
-    var currentdate = new Date();
-    return currentdate.getDate() + "/" +
-        + (currentdate.getMonth() + 1) + "/"
-        + currentdate.getFullYear() + " @ "
-        + currentdate.getHours() + ":"
-        + currentdate.getMinutes() + ":"
-        + currentdate.getSeconds();
+    var currentDate = new Date();
+    return (currentDate.getMonth() + 1) + "/"
+        + currentDate.getDate() + "/" +
+        + currentDate.getFullYear() + " @ "
+        + currentDate.getHours() + ":"
+        + currentDate.getMinutes() + ":"
+        + currentDate.getSeconds();
 };
