@@ -57,12 +57,13 @@ angular.module("wizard").controller("wizardCtrl",
 
         $scope.doSetup = function () {
             handleFormDataWithCookie(DataToBeStoredInCookie, CookieStoreEnum.STORE, $scope, $cookieStore);
+            var finalClusterNanme = $scope.appendIpToClusterName? $scope.clusterName + "_" +
+                ($scope.isPG1Dhcp? $scope.szIp: $scope.br0Ip).replace(/\./g,"_"): $scope.clusterName;
             $scope.requestContent = {
                 "portConfig": $scope.portGroup == $scope.ONE_PORT_GROUP? 1: 2,
                 "createClusterType": $scope.clusterType,
-                "clusterName": $scope.appendIpToClusterName? $scope.clusterName + "_" +
-                    ($scope.isPG1Dhcp? $scope.szIp: $scope.br0Ip).replace(/\./g,"_"): $scope.clusterName,
-                "bladeName": $scope.bladeName,
+                "clusterName": finalClusterNanme,
+                "bladeName": $scope.bladeName || finalClusterNanme,
                 "bladeDesc": getReadableTime() + ' Setup by One Button Setup',
                 "DiscoveryProtocolType": 'Tcp',
                 "ntpServer": $scope.ntpServer,
