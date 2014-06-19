@@ -73,7 +73,7 @@
 <label tooltip-placement="bottom" tooltip="{{toolTipSzIP}}">SZ IP: </label>
 <input placeholder="SmartZone IP" ng-model="szIp" ng-enter="resetStatus(); doSetup()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <label tooltip-placement="bottom" tooltip="{{toolTipClusterName}}">Cluster/Controller Name: </label>
-<input placeholder="Controller/Cluster Name" ng-model="clusterName" ng-change="onClusterControllerNameChange()" ng-enter="resetStatus(); doSetup()" size="30"><br/><br/>
+<input placeholder="Cluster Name" ng-model="clusterName" ng-change="onClusterControllerNameChange()" ng-enter="resetStatus(); doSetup()" size="30"><br/><br/>
 <button type="button" class="btn btn-default btn-sm" ng-model="advance" btn-checkbox>Advance Setting</button>
 <table class="table table-striped table-bordered table-condensed"
        style="color: #080808; background-color: #eee" ng-show="advance">
