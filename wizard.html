@@ -11,6 +11,11 @@
     <script src="controllers/wizardController.js"></script>
     <link href="bower_components/bootstrap/dist/css/bootstrap.css" rel="stylesheet" />
     <link href="bower_components/bootstrap/dist/css/bootstrap-theme.css" rel="stylesheet" />
+    <style>
+        .ng-invalid { background-color: lightpink; }
+        .ng-valid { background-color: #9df99d; }
+        span.error { color: red; font-weight: bold; }
+    </style>
 </head>
 <body ng-controller="wizardCtrl">
 <div class="navbar navbar-inverse">
@@ -69,153 +74,174 @@
     Error (Code: {{error.code}}). The request was not succeeded.
 </div>
 
-<button class="btn btn-primary" ng-click="resetStatus(); doSetup()">Do Setup</button>&nbsp;&nbsp;
-<label tooltip-placement="bottom" tooltip="{{toolTipSzIP}}">SZ IP: </label>
-<input placeholder="SmartZone IP" ng-model="szIp" ng-enter="resetStatus(); doSetup()">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<label tooltip-placement="bottom" tooltip="{{toolTipClusterName}}">Cluster Name: </label>
-<input placeholder="Cluster Name" ng-model="clusterName" ng-change="onClusterControllerNameChange()" ng-enter="resetStatus(); doSetup()" size="30"><br/><br/>
+<form name="wizardForm" novalidate>
+    <div class="well">
+        <button class="btn btn-primary" ng-click="resetStatus(); doSetup()">Do Setup</button>&nbsp;&nbsp;
+        <label tooltip-placement="bottom" tooltip="{{toolTipSzIP}}">SZ IP: </label>
+        <input name="szIp" placeholder="SmartZone IP" ng-model="szIp" ng-enter="resetStatus(); doSetup()" required />
+        <span class="error" ng-show="wizardForm.szIp.$error.required">
+            Please enter SZ IP
+        </span>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <label tooltip-placement="bottom" tooltip="{{toolTipClusterName}}">Cluster Name: </label>
+        <input name="clusterName" placeholder="Cluster Name" ng-model="clusterName" ng-change="onClusterControllerNameChange()" ng-enter="resetStatus(); doSetup()" size="30" required />
+        <span class="error" ng-show="wizardForm.clusterName.$error.required">
+            Please enter cluster name
+        </span>
+    </div>
+</form>
+
 <button type="button" class="btn btn-default btn-sm" ng-model="advance" btn-checkbox>Advance Setting</button>
-<table class="table table-striped table-bordered table-condensed"
-       style="color: #080808; background-color: #eee" ng-show="advance">
-    <thead>
-    <th>Current Setting</th>
-    <th>Options</th>
-    </thead>
-    <tbody>
-    <tr>
-        <td width="20%">
-            <strong>Port Group Setting <span class="btn btn-default disabled" style="font-size: 14px">{{portGroup}}</span></strong>
-        </td>
-        <td>
-            <div class="btn-group">
-                <label class="btn btn-success" ng-model="portGroup" btn-radio="'{{ONE_PORT_GROUP}}'">{{ONE_PORT_GROUP}}</label>
-                <label class="btn btn-success" ng-model="portGroup" btn-radio="'{{TWO_PORT_GROUP}}'">{{TWO_PORT_GROUP}}</label>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td width="20%">
-            <strong>IP Setting <span class="btn btn-default disabled" style="font-size: 14px">{{isPG1Dhcp?'DHCP':'Static'}}</span></strong>
-        </td>
-        <td>
-            <label class="btn btn-warning" ng-model="isPG1Dhcp" btn-radio="true">DHCP</label>
-            <label class="btn btn-warning" ng-model="isPG1Dhcp" btn-radio="false">Static</label>
-            <div collapse="isPG1Dhcp">
-                <div class="btn-default well-sm">
-                    <table>
-                        <tr>
-                            <td>IP Address: </td>
-                            <td><input class="form-control" placeholder="IP Address" ng-model="br0Ip"></td>
-                        </tr>
-                        <tr>
-                            <td>Netmask: </td>
-                            <td><input class="form-control" placeholder="Netmask" ng-model="br0Netmask"></td>
-                        </tr>
-                        <tr>
-                            <td>Gateway: </td>
-                            <td><input class="form-control" placeholder="Gateway" ng-model="br0Gateway"></td>
-                        </tr>
-                    </table>
+<form name="advanceForm" novalidate>
+<div class="well" ng-show="advance">
+    <table class="table table-striped table-bordered table-condensed"
+           style="color: #080808; background-color: #eee">
+        <thead>
+        <th>Current Setting</th>
+        <th>Options</th>
+        </thead>
+        <tbody>
+        <tr>
+            <td width="20%">
+                <strong>Port Group Setting <span class="btn btn-default disabled" style="font-size: 14px">{{portGroup}}</span></strong>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <label class="btn btn-success" ng-model="portGroup" btn-radio="'{{ONE_PORT_GROUP}}'">{{ONE_PORT_GROUP}}</label>
+                    <label class="btn btn-success" ng-model="portGroup" btn-radio="'{{TWO_PORT_GROUP}}'">{{TWO_PORT_GROUP}}</label>
                 </div>
-            </div>
-            <table>
-                <tr>
-                    <td>Primary DNS Server: </td>
-                    <td><input class="form-control" placeholder="Primary DNS" ng-model="primaryDns"></td>
-                </tr>
-                <tr>
-                    <td>Secondary DNS Server: </td>
-                    <td><input class="form-control" placeholder="Secondary DNS" ng-model="secondaryDns2"></td>
-                </tr>
-                </td>
-            </table>
-        </td>
-    </tr>
-    <tr ng-show="portGroup==TWO_PORT_GROUP">
-        <td width="20%">
-            <strong>DP IP Setting <span class="btn btn-default disabled" style="font-size: 14px">{{isPG2Dhcp?'DHCP':'Static'}}</span></strong>
-        </td>
-        <td>
-            <label class="btn btn-warning" ng-model="isPG2Dhcp" btn-radio="true">DHCP</label>
-            <label class="btn btn-warning" ng-model="isPG2Dhcp" btn-radio="false">Static</label>
-            <div collapse="isPG2Dhcp">
-                <div class="btn-default well-sm">
-                    <table>
-                        <tr>
-                            <td>IP Address: </td>
-                            <td><input class="form-control" placeholder="IP Address" ng-model="dpIp"></td>
-                        </tr>
-                        <tr>
-                            <td>Netmask: </td>
-                            <td><input class="form-control" placeholder="Netmask" ng-model="dpNetmask"></td>
-                        </tr>
-                        <tr>
-                            <td>Gateway: </td>
-                            <td><input class="form-control" placeholder="Gateway" ng-model="dpGateway"></td>
-                        </tr>
-                    </table>
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                <strong>IP Setting <span class="btn btn-default disabled" style="font-size: 14px">{{isPG1Dhcp?'DHCP':'Static'}}</span></strong>
+            </td>
+            <td>
+                <label class="btn btn-warning" ng-model="isPG1Dhcp" btn-radio="true">DHCP</label>
+                <label class="btn btn-warning" ng-model="isPG1Dhcp" btn-radio="false">Static</label>
+                <div collapse="isPG1Dhcp">
+                    <div class="btn-default well-sm">
+                        <table>
+                            <tr>
+                                <td>IP Address: </td>
+                                <td><input class="form-control" placeholder="IP Address" ng-model="br0Ip"></td>
+                            </tr>
+                            <tr>
+                                <td>Netmask: </td>
+                                <td><input class="form-control" placeholder="Netmask" ng-model="br0Netmask"></td>
+                            </tr>
+                            <tr>
+                                <td>Gateway: </td>
+                                <td><input class="form-control" placeholder="Gateway" ng-model="br0Gateway"></td>
+                            </tr>
+                        </table>
+                    </div>
                 </div>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td width="20%">
-            <strong>Cluster Setting <span class="btn btn-default disabled" style="font-size: 14px">{{clusterType=='new'?'Create':'Join'}}</span></strong>
-        </td>
-        <td>
-            <div class="btn-group">
-                <label class="btn btn-danger" ng-model="clusterType" btn-radio="'new'">Create</label>
-                <label class="btn btn-danger" ng-model="clusterType" btn-radio="'join'">Join</label>
-            </div>
-            <table>
-                <tr>
-                    <td>Cluster Name: </td>
-                    <td>
-                        <input class="form-control" placeholder="Cluster Name" ng-model="clusterName">
-                        <input type="checkbox" ng-model="appendIpToClusterName"> Append IP to cluster name to avoid conflict
-                    </td>
-                </tr>
-                <tr>
-                    <td>Controller Name: </td>
-                    <td><input class="form-control" placeholder="Controller Name" ng-model="bladeName" ></td>
-                </tr>
-                <tr ng-show="clusterType=='new'">
-                    <td>NTP Server: </td>
-                    <td><input class="form-control" placeholder="NTP Server" ng-model="ntpServer"></td>
-                </tr>
-            </table>
-            <div collapse="clusterType=='new'">
-                <div class="btn-default well-sm">
-                    <table>
-                        <tr>
-                            <td>Leader IP: </td>
-                            <td><input class="form-control" placeholder="Leader IP" ng-model="clusterSeeds"></td>
-                        </tr>
-                        <tr>
-                            <td>Leader Password: </td>
-                            <td><input class="form-control" placeholder="Leader Node Password" ng-model="clusterNodePassword"></td>
-                        </tr>
-                    </table>
-                </div>
-            </div>
-        </td>
-    </tr>
-    <tr>
-        <td width="20%">
-            <strong>Password Setting <span class="btn btn-default disabled" style="font-size: 14px">{{adminPass1}}</span></strong>
-        </td>
-        <td>
-            <div class="btn-group">
                 <table>
                     <tr>
-                        <td>Password: </td>
-                        <td><input class="form-control" placeholder="Password" ng-model="adminPass1"></td>
+                        <td>Primary DNS Server: </td>
+                        <td><input class="form-control" placeholder="Primary DNS" ng-model="primaryDns"></td>
+                    </tr>
+                    <tr>
+                        <td>Secondary DNS Server: </td>
+                        <td><input class="form-control" placeholder="Secondary DNS" ng-model="secondaryDns2"></td>
+                    </tr>
+                    </td>
+                </table>
+            </td>
+        </tr>
+        <tr ng-show="portGroup==TWO_PORT_GROUP">
+            <td width="20%">
+                <strong>DP IP Setting <span class="btn btn-default disabled" style="font-size: 14px">{{isPG2Dhcp?'DHCP':'Static'}}</span></strong>
+            </td>
+            <td>
+                <label class="btn btn-warning" ng-model="isPG2Dhcp" btn-radio="true">DHCP</label>
+                <label class="btn btn-warning" ng-model="isPG2Dhcp" btn-radio="false">Static</label>
+                <div collapse="isPG2Dhcp">
+                    <div class="btn-default well-sm">
+                        <table>
+                            <tr>
+                                <td>IP Address: </td>
+                                <td><input class="form-control" placeholder="IP Address" ng-model="dpIp"></td>
+                            </tr>
+                            <tr>
+                                <td>Netmask: </td>
+                                <td><input class="form-control" placeholder="Netmask" ng-model="dpNetmask"></td>
+                            </tr>
+                            <tr>
+                                <td>Gateway: </td>
+                                <td><input class="form-control" placeholder="Gateway" ng-model="dpGateway"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                <strong>Cluster Setting <span class="btn btn-default disabled" style="font-size: 14px">{{clusterType=='new'?'Create':'Join'}}</span></strong>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <label class="btn btn-danger" ng-model="clusterType" btn-radio="'new'">Create</label>
+                    <label class="btn btn-danger" ng-model="clusterType" btn-radio="'join'">Join</label>
+                </div>
+                <table>
+                    <tr>
+                        <td>Cluster Name: </td>
+                        <td>
+                            <input class="form-control" placeholder="Cluster Name" ng-model="clusterName" />
+                            <input type="checkbox" ng-model="appendIpToClusterName"> Append IP to cluster name to avoid conflict
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>Controller Name: </td>
+                        <td><input class="form-control" placeholder="Controller Name" ng-model="bladeName" ></td>
+                    </tr>
+                    <tr ng-show="clusterType=='new'">
+                        <td>NTP Server: </td>
+                        <td><input class="form-control" placeholder="NTP Server" ng-model="ntpServer"></td>
                     </tr>
                 </table>
-            </div>
-        </td>
-    </tr>
-    </tbody>
-</table>
+                <div collapse="clusterType=='new'">
+                    <div class="btn-default well-sm">
+                        <table>
+                            <tr>
+                                <td>Leader IP: </td>
+                                <td><input class="form-control" placeholder="Leader IP" ng-model="clusterSeeds"></td>
+                            </tr>
+                            <tr>
+                                <td>Leader Password: </td>
+                                <td><input class="form-control" placeholder="Leader Node Password" ng-model="clusterNodePassword"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+            </td>
+        </tr>
+        <tr>
+            <td width="20%">
+                <strong>Password Setting <span class="btn btn-default disabled" style="font-size: 14px">{{adminPass1}}</span></strong>
+            </td>
+            <td>
+                <div class="btn-group">
+                    <table>
+                        <tr>
+                            <td>Password: </td>
+                            <td><input name="adminPass1"
+                                       class="form-control" placeholder="Password" ng-model="adminPass1" required />
+                            <span class="error" ng-show="advanceForm.adminPass1.$error.required">
+                                Please enter admin password
+                            </span>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+</form>
 </body>
 </html>
