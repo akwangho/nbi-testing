@@ -76,7 +76,7 @@
 
 <form name="wizardForm" novalidate>
     <div class="well">
-        <button class="btn btn-primary" ng-click="resetStatus(); doSetup()">Do Setup</button>&nbsp;&nbsp;
+        <button ng-disabled="wizardForm.$invalid" class="btn btn-primary" ng-click="resetStatus(); doSetup()">Do Setup</button>&nbsp;&nbsp;
         <label tooltip-placement="bottom" tooltip="{{toolTipSzIP}}">SZ IP: </label>
         <input name="szIp" placeholder="SmartZone IP" ng-model="szIp" ng-enter="resetStatus(); doSetup()" required />
         <span class="error" ng-show="wizardForm.szIp.$error.required">
