@@ -96,14 +96,14 @@
         <td>Request Password</td>
         <td><input ng-model="requestPassword"></td>
     </tr>
-    <tr>
+    <tr ng-hide="requestType.name == 'Encrypt' || requestType.name == 'Decrypt'">
         <td>UE-MAC</td>
         <td><input ng-model="ueMac" ng-change="encryptedUeMac=''">
             Auto Encrypt
             <input type="checkbox" ng-model="isEncUeMac" ng-change="encryptedUeMac=''">{{encryptedUeMac}}
         </td>
     </tr>
-    <tr>
+    <tr ng-hide="requestType.name == 'Encrypt' || requestType.name == 'Decrypt'">
         <td>UE-IP</td>
         <td><input ng-model="ueIp" ng-change="encryptedUeIp=''">
             Auto Encrypt
@@ -118,6 +118,11 @@
     <tr ng-show="needUsernamePassword">
         <td>UE Password</td>
         <td><input ng-model="uePassword">
+        </td>
+    </tr>
+    <tr ng-show="requestType.name == 'Encrypt' || requestType.name == 'Decrypt'">
+        <td>Data</td>
+        <td><input ng-model="data">
         </td>
     </tr>
     </tbody>

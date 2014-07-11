@@ -17,7 +17,8 @@ angular.module("nbi")
             "ueIp",
             "ueUsername",
             "uePassword",
-            "isEncUeMac"
+            "isEncUeMac",
+            "data"
         ];
 
         $scope.datastore = [];
@@ -34,6 +35,8 @@ angular.module("nbi")
             {name: 'EnrichmentInfo', category: UserOnlineControl},
             {name: 'EncryptIP', category: GetConfig},
             {name: 'DecryptIP', category: GetConfig},
+            {name: 'Encrypt', category: GetConfig},
+            {name: 'Decrypt', category: GetConfig},
             {name: 'ControlBladeIPList', category: GetConfig},
             {name: 'ClusterBladeIPList', category: GetConfig},
             {name: 'ManagementBladeIPList', category: GetConfig}
@@ -73,7 +76,12 @@ angular.module("nbi")
                 }
             }
             else { // GetConfig
-                reqTemplate["UE-IP"] = $scope.ueIp;
+                if ($scope.requestType.name == 'Encrypt' || $scope.requestType.name == 'Decrypt') {
+                    reqTemplate['Data'] = $scope.data;
+                }
+                else {
+                    reqTemplate["UE-IP"] = $scope.ueIp;
+                }
             }
             $scope.requestContent = {};
             for (var key2 in reqTemplate) $scope.requestContent[key2] = reqTemplate[key2];
