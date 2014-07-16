@@ -5,13 +5,13 @@ var bodyParser = require('body-parser');
 var app = express();
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({extended: true}));
-
-
-// parse application/vnd.api+json as json
-app.use(bodyParser.json({ type: 'application/vnd.api+json' }));
+app.use(bodyParser.json());
 app.post('/proxy', function(req, res) {
     var requestUrl = req.body.requestUrl;
     var requestContent = req.body.requestContent;
+
+    console.log("requestUrl \n" + requestUrl);
+    console.log("requestContent \n" + requestContent);
 
     doPost(requestUrl, JSON.stringify(requestContent), function (res2) {
         res.end(res2);
