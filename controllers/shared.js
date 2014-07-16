@@ -7,10 +7,10 @@ var CookieStoreEnum = Object.freeze({
 function handleFormDataWithCookie(attributeArray, cookieStoreEnum, $scope, $cookieStore) {
     angular.forEach(attributeArray, function(value) {
         if (cookieStoreEnum == CookieStoreEnum.STORE) {
-            $cookieStore.put(value, $scope[value]);
+            $scope[value] && $cookieStore.put(value, $scope[value]);
         }
         else { // restore
-            $scope[value] = $cookieStore.get(value) !== undefined ? $cookieStore.get(value) : $scope[value];
+            $scope[value] = $cookieStore.get(value) === undefined? $scope[value]: $cookieStore.get(value);
         }
     })
 }
@@ -24,7 +24,7 @@ var qs = function(obj, prefix){
         str.push(angular.isObject(v) ? qs(v, k) : (k) + "=" + encodeURIComponent(v));
     }
     return str.join("&");
-}
+};
 
 var getReadableTime = function () {
     var currentDate = new Date();
