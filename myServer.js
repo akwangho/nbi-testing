@@ -4,7 +4,7 @@ var bodyParser = require('body-parser');
 
 var app = express();
 app.use(express.static(__dirname));
-app.use(bodyParser());
+app.use(bodyParser.urlencoded({extended: true}));
 
 
 // parse application/vnd.api+json as json
