@@ -54,6 +54,7 @@ angular.module("nbi")
         $scope.needUsernamePassword = false;
         $scope.ueUsername = "abc";
         $scope.uePassword = "aaaa";
+        $scope.data = "";
 
         $scope.requestContent = "";
 
