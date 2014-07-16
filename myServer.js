@@ -1,17 +1,22 @@
 var express = require('express');
 var request = require('request');
 var bodyParser = require('body-parser');
+var logger = require('morgan');
+var fs = require('fs');
+
+var logFile = fs.createWriteStream('./logOfMyServer.log', {flags: 'a'});
 
 var app = express();
 app.use(express.static(__dirname));
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+app.use(logger({stream: logFile}));
 app.post('/proxy', function(req, res) {
     var requestUrl = req.body.requestUrl;
     var requestContent = req.body.requestContent;
 
-    console.log("requestUrl \n" + requestUrl);
-    console.log("requestContent \n" + requestContent);
+    console.log("requestUrl: [" + requestUrl + "]. From: [" + req.ip + "]");
+    console.log("requestContent: [" + JSON.stringify(requestContent) + "]");
 
     doPost(requestUrl, JSON.stringify(requestContent), function (res2) {
         res.end(res2);
