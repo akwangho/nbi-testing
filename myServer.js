@@ -15,8 +15,8 @@ app.post('/proxy', function(req, res) {
     var requestUrl = req.body.requestUrl;
     var requestContent = req.body.requestContent;
 
-    console.log("requestUrl: [" + requestUrl + "]. From: [" + req.ip + "]");
-    console.log("requestContent: [" + JSON.stringify(requestContent) + "]");
+    logFile.write("Request Url: [" + requestUrl + "]. From: [" + req.ip + "].\n");
+    logFile.write("Request Content: [" + JSON.stringify(requestContent) + "].\n");
 
     doPost(requestUrl, JSON.stringify(requestContent), function (res2) {
         res.end(res2);
