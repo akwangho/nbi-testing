@@ -15,10 +15,11 @@ app.post('/proxy', function(req, res) {
     var requestUrl = req.body.requestUrl;
     var requestContent = req.body.requestContent;
 
-    logFile.write("Request Url: [" + requestUrl + "]. From: [" + req.ip + "].\n");
-    logFile.write("Request Content: [" + JSON.stringify(requestContent) + "].\n");
+    logFile.write("[" + new Date() + "] Request Url: [" + requestUrl + "]. From: [" + req.ip + "].\n");
+    logFile.write("[" + new Date() + "] Request Content: [" + JSON.stringify(requestContent) + "].\n");
 
     doPost(requestUrl, JSON.stringify(requestContent), function (res2) {
+        logFile.write("[" + new Date() + "] Response Content: [" + JSON.stringify(res2) + "].\n");
         res.end(res2);
     });
 });
